@@ -29,11 +29,15 @@
     "@babel/cli": "^7.4.3",
     "@babel/core": "^7.4.3",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/plugin-transform-classes": "^7.4.3",
     "@babel/polyfill": "^7.4.3",
     "@babel/preset-env": "^7.4.3",
     "@babel/register": "^7.4.0",
     "axe-cli": "^3.0.0",
+    "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
+    "babel-plugin-transform-es2015-arrow-functions": "^6.22.0",
+    "babel-plugin-transform-es2015-shorthand-properties": "^6.24.1",
     "chromedriver": "^2.46.0",
     "copy-webpack-plugin": "^5.0.2",
     "css-loader": "^2.1.1",
@@ -78,11 +82,10 @@
     "webpack-merge": "^4.2.1"
   },
   "dependencies": {
-    "babel-eslint": "^10.0.1",
     "eslint-loader": "^2.1.2",
     "oidc-client": "^1.7.1",
     "owncloud-design-system": "^1.0.0-510",
-    "owncloud-sdk": "1.0.0-16",
+    "owncloud-sdk": "1.0.0-57",
     "url-search-params-polyfill": "^5.1.0"
   }
 }
