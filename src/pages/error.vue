@@ -35,7 +35,7 @@ export default {
   computed: {
     ...mapGetters(['configuration']),
     backgroundStyle () {
-      return `background-image: linear-gradient(${this.configuration.theme.colors.primary}, ${this.configuration.theme.colors.secondary});`
+      return ''
     }
   },
   methods: {

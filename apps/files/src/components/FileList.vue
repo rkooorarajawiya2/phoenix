@@ -1,49 +1,74 @@
 <template>
-  <oc-table middle divider class="oc-filelist" id="files-list">
-    <oc-table-group>
-      <oc-table-row>
-        <oc-table-cell shrink type="head">
+<div>
+  <div middle divider class="oc-fl-table oc-filelist" id="files-list">
+      <div class="oc-fl-row">
+        <div class="oc-fl-cell" shrink type="head">
           <oc-checkbox class="uk-margin-small-left" @click.native="toggleAll" :value="all" />
-        </oc-table-cell>
-        <oc-table-cell shrink />
-        <oc-table-cell type="head" class="uk-text-truncate" v-text="'Name'"/>
-        <oc-table-cell shrink type="head" v-text="'Size'"/>
-        <oc-table-cell shrink type="head" class="uk-text-nowrap uk-visible@s" v-text="'Modification Time'"/>
-        <oc-table-cell shrink type="head" v-text="'Actions'"/>
-      </oc-table-row>
-    </oc-table-group>
-    <oc-table-group>
-      <oc-table-row v-for="(item, index) in fileData" :key="index" class="file-row">
-        <oc-table-cell>
-          <oc-checkbox class="uk-margin-small-left" @change.native="$emit('toggle', item)" :value="selectedFiles.indexOf(item) >= 0" />
-        </oc-table-cell>
-        <oc-table-cell class="uk-padding-remove">
-          <oc-star class="uk-display-block" @click.native="toggleFileFavorite(item)" :shining="item.starred" />
-        </oc-table-cell>
-        <oc-table-cell>
-          <oc-file @click.native="item.extension === false ? navigateTo('files-list', item.path.substr(1)) : openFileActionBar(item)"
-                   :name="item.basename" :extension="item.extension ? item.extension : ''" class="file-row-name" :icon="fileTypeIcon(item)"
-                   :filename="item.name" :key="item.id" />
-        </oc-table-cell>
-        <oc-table-cell class="uk-text-meta uk-text-nowrap">
-          {{ item.size | fileSize }}
-        </oc-table-cell>
-        <oc-table-cell class="uk-text-meta uk-text-nowrap uk-visible@s">
-          {{ formDateFromNow(item.mdate) }}
-        </oc-table-cell>
-        <oc-table-cell>
-          <div class="uk-button-group uk-margin-small-right">
-            <oc-button v-for="(action, index) in actions" :key="index" @click.native="action.handler(item, action.handlerData)" :disabled="!action.isEnabled(item)" :icon="action.icon" aria-label="Edit Picture" />
-          </div>
-        </oc-table-cell>
-      </oc-table-row>
-    </oc-table-group>
+        </div>
+        <div class="oc-fl-cell" shrink />
+        <div class="oc-fl-cell uk-text-truncate" type="head" v-text="'Name'"/>
+        <div class="oc-fl-cell" shrink type="head" v-text="'Size'"/>
+        <div class="oc-fl-cell uk-text-nowrap uk-visible@s" shrink type="head" v-text="'Modification Time'"/>
+        <div class="oc-fl-cell" shrink type="head" v-text="'Actions'"/>
+      </div>
     <oc-dialog-prompt name="change-file-dialog" :oc-active="changeFileName" v-model="newName"
                       :ocTitle="_renameDialogTitle" @oc-confirm="changeName" @oc-cancel="changeFileName = false; newName = ''"></oc-dialog-prompt>
     <oc-dialog-prompt name="delete-file-confirmation-dialog" :oc-active="deleteConfirmation !== ''" :oc-content="deleteConfirmation" :oc-has-input="false"
                       :ocTitle="_deleteDialogTitle" @oc-confirm="reallyDeleteFile" @oc-cancel="deleteConfirmation = ''"></oc-dialog-prompt>
-  </oc-table>
+  </div>
+  <RecycleScroller
+    class="scroller"
+    :items="fileData"
+    :item-size="64"
+    key-field="id"
+  >
+    <template v-slot="{ item }" class="user">
+      <div class="file-row oc-fl-row" >
+        <div class="oc-fl-cell">
+          <oc-checkbox class="uk-margin-small-left" @change.native="$emit('toggle', item)" :value="selectedFiles.indexOf(item) >= 0" />
+        </div>
+        <div class="oc-fl-cell uk-padding-remove">
+          <oc-star class="uk-display-block" @click.native="toggleFileFavorite(item)" :shining="item.starred" />
+        </div>
+        <div class="oc-fl-cell">
+          <oc-file @click.native="item.extension === false ? navigateTo('files-list', item.path.substr(1)) : openFileActionBar(item)"
+                   :name="item.basename" :extension="item.extension ? item.extension : ''" class="file-row-name" :icon="fileTypeIcon(item)"
+                   :filename="item.name" :key="item.id" />
+        </div>
+        <div class="oc-fl-cell uk-text-meta uk-text-nowrap">
+          {{ item.size | fileSize }}
+        </div>
+        <div class="oc-fl-cell uk-text-meta uk-text-nowrap uk-visible@s">
+          {{ formDateFromNow(item.mdate) }}
+        </div>
+        <div class="oc-fl-cell uk-position-right">
+          <div class="uk-button-group uk-margin-small-right">
+            <oc-button v-for="(action, index) in actions" :key="index" @click.native="action.handler(item, action.handlerData)" :disabled="!action.isEnabled(item)" :icon="action.icon" aria-label="Edit Picture" />
+          </div>
+        </div>
+      </div>
+      </template>
+  </RecycleScroller>
+</div>
 </template>
+<style scoped>
+  .scroller {
+    height: 700px;
+  }
+  .oc-fl-table {
+    /*display:  table;
+    width:100%;*/
+  }
+  .oc-fl-row {
+    /*display:table-row;
+    width:auto;*/
+  }
+  .oc-fl-cell {
+    display: inline
+    /*float:left;/*fix for  buggy browsers*/
+    /*display:table-column;*/
+  }
+</style>
 <script>
 import OcDialogPrompt from './ocDialogPrompt.vue'
 import { includes } from 'lodash'
@@ -51,15 +76,24 @@ import { mapGetters, mapActions } from 'vuex'
 
 import Mixins from '../mixins'
 
+import { RecycleScroller } from 'vue-virtual-scroller'
+import 'vue-virtual-scroller/dist/vue-virtual-scroller.css'
+
 export default {
   components: {
-    OcDialogPrompt
+    OcDialogPrompt,
+    RecycleScroller
   },
   mixins: [
     Mixins
   ],
   name: 'FileList',
-  props: ['fileData', 'starsEnabled', 'checkboxEnabled', 'dateEnabled'],
+  props: {
+    fileData: Array,
+    starsEnabled: Boolean,
+    checkboxEnabled: Boolean,
+    dateEnabled: Boolean
+  },
   data: () => ({
     changeFileName: false,
     deleteConfirmation: '',

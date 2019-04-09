@@ -65,7 +65,6 @@ module.exports = {
       'core-js/modules/es6.promise',
       'core-js/modules/es6.array.iterator',
       './src/phoenix.js',
-      './node_modules/material-design-icons-iconfont/dist/material-design-icons.css',
       './static/fonts/ocft/css/ocft.css'
     ]
   },
@@ -83,7 +82,7 @@ module.exports = {
       }]
     }, {
       test: /\.(woff(2)?|ttf|eot|svg)(\?v=\d+\.\d+\.\d+)?$/,
-      include: [/node_modules\/material-design-icons-iconfont\/dist/, /static\/fonts\/ocft\/font/],
+      include: [/static\/fonts\/ocft\/font/],
       use: [{
         loader: 'file-loader',
         options: {
