@@ -19,7 +19,7 @@
   <RecycleScroller
     class="scroller"
     :items="fileData"
-    :item-size="64"
+    :item-size="32"
     key-field="id"
   >
     <template v-slot="{ item }" class="user">
@@ -63,7 +63,7 @@
     /*display:table-row;
     width:auto;*/
   }
-  .oc-fl-cell {
+  div.oc-fl-cell {
     display: inline
     /*float:left;/*fix for  buggy browsers*/
     /*display:table-column;*/
