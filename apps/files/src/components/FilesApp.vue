@@ -1,5 +1,5 @@
   <template>
-    <div class="oc-app" id="files-app">
+    <div class="oc-app" id="files-app" @dragover="$_ocApp_dragOver">
       <oc-app-layout :rightHidden="selectedFiles.length === 0">
         <template slot="center">
           <oc-loader id="files-list-progress" v-if="loading"></oc-loader>
@@ -46,7 +46,7 @@ export default {
     this.getFolder()
   },
   methods: {
-    ...mapActions('Files', ['resetFileSelection', 'addFileSelection', 'removeFileSelection', 'loadFiles', 'markFavorite', 'addFiles', 'updateFileProgress']),
+    ...mapActions('Files', ['resetFileSelection', 'addFileSelection', 'removeFileSelection', 'loadFiles', 'markFavorite', 'addFiles', 'updateFileProgress', 'dragOver']),
     ...mapActions(['openFile', 'showNotification']),
 
     trace () {
@@ -183,6 +183,9 @@ export default {
         breadcrumb = {}
       }
       return this.breadcrumbs
+    },
+    $_ocApp_dragOver () {
+      this.dragOver(true)
     }
   },
 
@@ -194,7 +197,7 @@ export default {
 
   computed: {
     ...mapState(['route']),
-    ...mapGetters('Files', ['selectedFiles', 'inProgress', 'activeFiles', 'fileFilter', 'davProperties']),
+    ...mapGetters('Files', ['selectedFiles', 'inProgress', 'activeFiles', 'fileFilter', 'davProperties', 'dropzone']),
     ...mapGetters(['getToken', 'extensions']),
     activeRoute () {
       return this.getRoutes()

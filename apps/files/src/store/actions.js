@@ -146,5 +146,8 @@ export default {
         reject(error)
       })
     })
+  },
+  dragOver (context, value) {
+    context.commit('DRAG_OVER', value)
   }
 }

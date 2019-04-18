@@ -1,5 +1,6 @@
 <template>
   <div>
+    <file-drop :url='url' :headers="headers" @success="onFileSuccess" @error="onFileError" @progress="onFileProgress" />
   <oc-topbar variation="secondary">
     <template slot="left">
       <oc-topbar-logo icon="home" @click="navigateTo('files-list', 'home')"></oc-topbar-logo>
@@ -63,13 +64,15 @@
 <script>
 import FileUpload from './FileUpload.vue'
 import OcDialogPrompt from './ocDialogPrompt.vue'
+import FileDrop from './FileDrop.vue'
 import { mapActions, mapGetters, mapState } from 'vuex'
 import Mixins from '../mixins'
 
 export default {
   components: {
     FileUpload,
-    OcDialogPrompt
+    OcDialogPrompt,
+    FileDrop
   },
   mixins: [
     Mixins

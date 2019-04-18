@@ -74,5 +74,8 @@ export default {
     })
     state.files[fileIndex].name = newValue
     state.files[fileIndex].path = '/' + newPath + newValue
+  },
+  DRAG_OVER (state, value) {
+    state.dropzone = value
   }
 }

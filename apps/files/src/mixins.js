@@ -1,6 +1,9 @@
 import filesize from 'filesize'
 import moment from 'moment'
+import FileUpload from './FileUpload.js'
 import fileTypeIconMappings from './fileTypeIconMappings.json'
+import { mapActions, mapGetters } from 'vuex'
+import { find } from 'lodash'
 
 export default {
   filters: {
@@ -19,7 +22,13 @@ export default {
   data: () => ({
     selectedFile: ''
   }),
+  computed: {
+    ...mapGetters('Files', ['inProgress', 'files'])
+  },
   methods: {
+    ...mapActions('Files', ['addFileToProgress']),
+    ...mapActions(['showNotification']),
+
     formDateFromNow (date) {
       return moment(date).locale(this.$language.current).fromNow()
     },
@@ -96,6 +105,48 @@ export default {
       }
 
       return '<span class="' + cssClass.join(' ') + '">' + string + '</span>'
+    },
+    $_ocUpload_addToQue (e) {
+      let files = e.target.files || e.dataTransfer.files
+      if (!files.length) return
+      for (let file of files) {
+        let exists = find(this.files, ['name', file.name])
+        if (!exists) {
+          this.$_ocUpload(file)
+        } else {
+          this.showNotification({
+            title: this.$gettextInterpolate('Upload for %{file} failed - File already exists', { file: file.name }),
+            type: 'error'
+          })
+        }
+      }
+    },
+    $_ocUpload (file) {
+      this.addFileToProgress(file)
+      let fileUpload = new FileUpload(file, this.url, this.headers, this.$_ocUpload_onProgress, this.requestType)
+      fileUpload
+        .upload(this.additionalData)
+        .then(e => {
+          this.$emit('success', e, file)
+          this.$_ocUploadInput_clean()
+        })
+        .catch(e => {
+          this.$emit('error', e)
+          this.$_ocUploadInput_clean()
+        })
+    },
+    $_ocUpload_onProgress (e, file) {
+      let progress = parseInt(e.loaded * 100 / e.total)
+      this.$emit('progress', {
+        fileName: file.name,
+        progress
+      })
+    },
+    $_ocUploadInput_clean () {
+      let input = this.$refs.input
+      if (input) {
+        input.value = ''
+      }
     }
   }
 }
