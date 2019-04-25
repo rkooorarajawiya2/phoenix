@@ -54,6 +54,13 @@ export default {
         this.selectedFile = item
         this.newName = item.name
       } else {
+        if (item.includes('/')) {
+          this.showNotification({
+            title: this.$gettext(`Renaming of ${this.selectedFile.name} failed. The file name cannot contain a "/"`),
+            status: 'danger'
+          })
+          return
+        }
         this.renameFile({
           client: this.$client,
           file: this.selectedFile,
